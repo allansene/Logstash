@@ -1,0 +1,24 @@
+input {
+    beats { 
+		port => 5044
+	}
+}
+filter {
+    grok {
+        match => { "message" => "%{DATESTAMP:datestamp} %{IP:ip_server} %{WORD:method} %{URIPATHPARAM:requested_uri} %{NOTSPACE:uri_query} %{NUMBER:port} %{NOTSPACE:user_basicauth} %{IP:ip_origin_request} %{NOTSPACE:user_agent} %{URI:full_requested_uri} %{NUMBER:http_status} %{NUMBER:substatus} %{NUMBER:win32_status} %{NUMBER:time_taken}"}
+    }
+    geoip {
+        source => "clientip"
+    }
+}
+output {
+    stdout {
+		codec => rubydebug
+	}
+	elasticsearch { 
+		hosts => "localhost:9200"
+		manage_template => false
+		index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+		document_type => "%{[@metadata][type]}"
+	}
+}

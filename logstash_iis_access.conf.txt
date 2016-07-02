@@ -1,0 +1,22 @@
+input {
+    file {
+        path => "D:\logs\IIS\u_ex1606*.log"
+        start_position => beginning
+		ignore_older => 100000
+    }
+}
+filter {
+    grok {
+		patterns_dir => ["./patterns"]
+        match => { "message" => "%{IIS_ACCESS}"}
+    }
+    geoip {
+        source => "clientip"
+    }
+}
+output {
+    stdout {
+		codec => rubydebug
+	}
+	elasticsearch { }
+}

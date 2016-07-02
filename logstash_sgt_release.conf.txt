@@ -1,0 +1,39 @@
+input {
+    file {
+        path => "D:\logs\SGT\release\28_06_2016.txt"
+        start_position => beginning
+		ignore_older => 10000000
+    }
+}
+filter {
+    grok {
+		patterns_dir => ["./patterns"]
+        match => [
+				"message", "%{SGT_RELEASE_TIMES}",
+				"message", "%{SGT_RELEASE_DOC_FIELDS}"
+		]
+		add_field => ["timestamp_raw", "%{ano_log}-%{mes_log}-%{dia_log}:%{horario_log}"]
+		add_tag => [ "sgt_release_log" ]
+	}
+	
+	if "sgt_release_log" not in [tags] {            
+		drop { }
+	}
+	
+	date {
+		match => [ "timestamp_raw" , "yyyy-MM-dd:HH:mm:ss" ]
+		target => "@timestamp"
+	}
+	date {
+		match => [ "data_competencia" , "dd/MM/yyyy" ]
+		target => "data_competencia"
+	}
+	
+}
+	
+output {
+    stdout {
+		codec => rubydebug
+	}
+	elasticsearch { }
+}

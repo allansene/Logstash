@@ -1,0 +1,25 @@
+input {
+    file {
+        path => "D:\logs\SGT\tomcat\localhost_access_log.2016-06-28.txt"
+        start_position => beginning
+		ignore_older => 100000000
+    }
+}
+filter {
+    grok {
+        match => { "message" => "%{COMMONAPACHELOG}"}
+    }
+    geoip {
+        source => "clientip"
+    }
+	
+	date {
+		match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+	}
+}
+output {
+    stdout {
+		codec => rubydebug
+	}
+	elasticsearch { }
+}

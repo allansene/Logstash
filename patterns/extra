@@ -1,0 +1,7 @@
+# patterns do SGT ./patterns/extra:
+SGT_DATASTAMP %{YEAR:ano_log}[./-]%{MONTHDAY:dia_log}[./-]%{MONTHNUM:mes_log}[_]%{TIME:horario_log}
+SGT_RELEASE_TIMES %{SGT_DATASTAMP} - Dados dos campos Kofax - \[NumeroProtocolo .*? %{BASE10NUM:protocolo}\];\[NumeroCnpj .*? %{BASE10NUM:cnpj}\];\[DataCompetencia .*? %{DATE_EU:data_competencia}\]
+SGT_RELEASE_DOC_FIELDS %{SGT_DATASTAMP} - \[Inicio .*%{TIME:inicio}\] \[Final.*%{TIME:final}\] \[Dura.*.*o .*%{TIME:duracao}\]
+
+# patterns do IIS
+IIS_ACCESS %{DATESTAMP:datestamp} %{IP:ip_server} %{WORD:method} %{URIPATHPARAM:requested_uri} %{NOTSPACE:uri_query} %{NUMBER:port} %{NOTSPACE:user_basicauth} %{IP:ip_origin_request} %{NOTSPACE:user_agent} %{URI:full_requested_uri} %{NUMBER:http_status} %{NUMBER:substatus} %{NUMBER:win32_status} %{NUMBER:time_taken}
